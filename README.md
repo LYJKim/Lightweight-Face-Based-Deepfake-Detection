@@ -16,16 +16,16 @@ To address this, multiple deep learning models were implemented and compared wit
 
 ## Project Structure
 
+```bash
 Lightweight-Face-Based-Deepfake-Detection/
-├── dataset_통합/ # Combined real/fake face dataset (Kaggle 140K)
-├── EfficientNet/ # EfficientNet-B0 model and training scripts
-├── Mobilenet/ # MobileNetV2 implementation
-├── VIT/ # Vision Transformer implementation
-├── ResNet.ipynb # ResNet50 experiment notebook
+├── dataset_통합/               # Combined real/fake face dataset (Kaggle 140K)
+├── EfficientNet/               # EfficientNet-B0 model and training scripts
+├── Mobilenet/                  # MobileNetV2 implementation
+├── VIT/                        # Vision Transformer implementation
+├── ResNet.ipynb                # ResNet50 experiment notebook
 ├── report/
-│ └── 6조_최종보고서.pdf # Full project report (Korean)
-└── README.md # Project documentation
-
+│   └── 6조_최종보고서.pdf       # Full project report (Korean)
+└── README.md                   # Project documentation
 
 ---
 

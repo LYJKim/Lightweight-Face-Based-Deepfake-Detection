@@ -1,105 +1,102 @@
 # Lightweight-Face-Based-Deepfake-Detection
 
-Overview
+## Project Overview
 
-Lightweight-Face-Based-Deepfake-Detection is a deep learning project designed to classify whether a given facial image is real or AI-generated (GAN-based).
-With the rapid advancement of image synthesis technologies such as GANs and deepfakes, distinguishing between real and generated faces has become increasingly important for maintaining digital authenticity and trust.
+This project aims to detect whether a given facial image is **real** or **AI-generated (GAN-based)**.  
+With the rapid development of deepfake and synthetic media, distinguishing authentic human faces from generated ones has become an important challenge.  
+To address this, multiple deep learning models were implemented and compared with a focus on lightweight and high-performance architectures.
 
-This project focuses on:
+### Main Objectives
+- Develop lightweight and efficient deepfake detection models  
+- Compare CNN and Transformer-based architectures  
+- Evaluate model performance on specific facial regions (eyes, nose, mouth)  
+- Test robustness against image retouching and editing  
 
-Building lightweight and high-performance deepfake detection models
+---
 
-Comparing multiple architectures (CNN-based and Transformer-based)
+## Project Structure
 
-Evaluating the effectiveness of localized facial region analysis (eyes, nose, mouth)
-
-Assessing model robustness against retouched (Photoshopped) real images
-
-Key Features
-
-Binary Classification: Distinguish between real and GAN-generated faces
-
-Multi-model Comparison: ResNet50, EfficientNet-B0, MobileNetV2, and Vision Transformer (ViT)
-
-Region-based Experiments: Evaluate performance using cropped facial parts (eyes, nose, mouth)
-
-Robustness Test: Analyze model behavior on retouched real images
-
-Grad-CAM Visualization: Identify regions that models focus on during prediction
-
-Lightweight Optimization: Balance between accuracy and computational efficiency
-
-Project Structure
 Lightweight-Face-Based-Deepfake-Detection/
-├── dataset_통합/                # Real and Fake face datasets (Kaggle 140K)
-├── EfficientNet/                # EfficientNet-B0 implementation
-├── Mobilenet/                   # MobileNetV2 implementation
-├── VIT/                         # Vision Transformer implementation
-├── ResNet.ipynb                 # ResNet50 experiment notebook
-├── report/                      
-│   └── 6조_최종보고서.pdf        # Full project report (Korean)
-└── README.md
+├── dataset_통합/ # Combined real/fake face dataset (Kaggle 140K)
+├── EfficientNet/ # EfficientNet-B0 model and training scripts
+├── Mobilenet/ # MobileNetV2 implementation
+├── VIT/ # Vision Transformer implementation
+├── ResNet.ipynb # ResNet50 experiment notebook
+├── report/
+│ └── 6조_최종보고서.pdf # Full project report (Korean)
+└── README.md # Project documentation
 
-Methodology
-Dataset
 
-Source: 140k Real and Fake Faces (Kaggle)
+---
 
-Composition:
+## Dataset
 
-Training: 50,000 real + 50,000 fake
+- **Source:** [140k Real and Fake Faces (Kaggle)](https://www.kaggle.com/datasets/xhlulu/140k-real-and-fake-faces)
+- **Composition:**
+  - Train: 50,000 real / 50,000 fake  
+  - Validation: 10,000 real / 10,000 fake  
+  - Test: 10,000 real / 10,000 fake
+- **Preprocessing:**
+  - Normalization using dataset mean and standard deviation  
+  - Data augmentation techniques:
+    - `RandomCrop(224)`
+    - `RandomHorizontalFlip()`
+    - `ColorJitter(brightness, contrast, saturation, hue)`
+    - `GaussianBlur(kernel_size=3)`
+  - Labeling handled via `ImageFolder` with mapping `{fake: 0, real: 1}`
 
-Validation: 10,000 real + 10,000 fake
+---
 
-Test: 10,000 real + 10,000 fake
+## Methodology
 
-Preprocessing:
+### Model Architectures
 
-Normalization using dataset mean & std
+| Model | Backbone | Best Accuracy | Fine-tuning Strategy | Learning Rate | Weight Decay |
+|--------|-----------|---------------|----------------------|----------------|---------------|
+| ResNet50 | CNN | 95.0% | Full fine-tuning | 0.0001 | 0.0001 |
+| EfficientNet-B0 | CNN | 94.5% | Full fine-tuning | 0.001 | 0.00001 |
+| MobileNetV2 | CNN | 92.9% | Full fine-tuning | 0.0005 | 0.0005 |
+| Vision Transformer (ViT) | Transformer | **96.3%** | FC + BN | 0.00001 | 0.00005 |
 
-Image augmentation:
+**Training configuration**
+- Optimizer: Adam  
+- Loss function: BCEWithLogitsLoss  
+- Scheduler: CosineAnnealingLR  
+- Batch size: 64  
 
-RandomCrop(224), RandomHorizontalFlip()
+---
 
-ColorJitter(brightness, contrast, saturation, hue)
+## Experimental Results
 
-GaussianBlur(kernel_size=3)
+### 1. Real vs GAN-generated Faces
 
-Labeling via ImageFolder (fake: 0, real: 1)
+| Model | Accuracy | Recall | F1-score | Specificity | AUC |
+|--------|-----------|---------|-----------|--------------|------|
+| ResNet50 | 95.0% | 95.2% | 95.0% | 94.8% | 0.9882 |
+| EfficientNet-B0 | 94.5% | 92.2% | 94.3% | 96.8% | - |
+| MobileNetV2 | 92.9% | 93.4% | 92.9% | 92.4% | 0.9842 |
+| Vision Transformer | **96.3%** | **96.8%** | **96.3%** | **95.8%** | - |
 
-Models and Training
-Model	Backbone	Best Accuracy	Fine-tuning Strategy	Learning Rate	Weight Decay
-ResNet50	CNN	95.0%	Full network fine-tuning	0.0001	0.0001
-EfficientNet-B0	CNN	94.5%	Full fine-tuning	0.001	0.00001
-MobileNetV2	CNN	92.9%	Full fine-tuning	0.0005	0.0005
-Vision Transformer (ViT)	Transformer	96.3%	FC + BN	0.00001	0.00005
+---
 
-Optimizer: Adam
+### 2. Region-based Analysis (Eyes, Nose, Mouth)
 
-Loss Function: BCEWithLogitsLoss
+| Model | Region | Accuracy |
+|--------|--------|-----------|
+| ResNet50 | Eyes + Nose | 87.9% |
+| EfficientNet-B0 | Eyes + Nose | 88.8% |
+| MobileNetV2 | Nose + Mouth | **89.0%** |
+| Vision Transformer | Eyes | 77.9% |
 
-Scheduler: CosineAnnealingLR
+---
 
-Batch Size: 64
+### 3. Robustness Test (Retouched Real Images)
 
-Experimental Results
-Main Experiment — Real vs GAN-generated Faces
-Model	Accuracy	Recall	F1-score	Specificity	AUC
-ResNet50	95.0%	95.2%	95.0%	94.8%	0.9882
-EfficientNet-B0	94.5%	92.2%	94.3%	96.8%	-
-MobileNetV2	92.9%	93.4%	92.9%	92.4%	0.9842
-Vision Transformer	96.3%	96.8%	96.3%	95.8%	-
+| Model | Accuracy | F1-score | Observation |
+|--------|-----------|-----------|-------------|
+| ResNet50 | 91.0% | 95.3% | Stable under mild retouching |
+| EfficientNet-B0 | **93.0%** | **96.3%** | Most robust to color/tone edits |
+| MobileNetV2 | 82.0% | 90.1% | Slight degradation under edited images |
+| Vision Transformer | 61.0% | 75.8% | Sensitive to global color and contour changes |
 
-Additional Experiment 1 — Local Region (Eyes, Nose, Mouth)
-Model	Region	Accuracy
-ResNet50	Eyes + Nose	87.9%
-EfficientNet-B0	Eyes + Nose	88.8%
-MobileNetV2	Nose + Mouth	89.0%
-Vision Transformer	Eyes	77.9%
-
-Additional Experiment 2 — Retouched Real Images
-Model	Accuracy	F1-score	Observation
-ResNet50	91.0%	95.3%	Stable under moderate retouching
-EfficientNet-B0	93.0%	96.3%	Most robust to color and tone changes
-MobileNetV2	82.0%	90.1%	Slight drop under edited conditions
-Vision Transformer	61.0%	75.8%	Sensitive to color correction & contour edits
+---

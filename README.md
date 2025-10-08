@@ -26,7 +26,7 @@ Lightweight-Face-Based-Deepfake-Detection/
 ├── report/
 │   └── 6조_최종보고서.pdf       # Full project report (Korean)
 └── README.md                   # Project documentation
-
+```
 ---
 
 ## Dataset
